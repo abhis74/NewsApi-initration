@@ -1,8 +1,20 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
+import PropTypes from 'prop-types'
+ 
 
 export class News extends Component {
+
+  static defaultProps = {
+   country : "in",
+   pageSize: 6
+  }
+  static propTypes = {
+   country : PropTypes.string,
+   pageSize: PropTypes.number
+  }
+
   constructor() {
     super();
     console.log("this is a constructor from News component");
@@ -13,11 +25,12 @@ export class News extends Component {
     };
   }
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=79e419c368bb473cbb82ac60b493c590&page=1&pagesize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=business&apiKey=79e419c368bb473cbb82ac60b493c590&page=1&pagesize=${this.props.pageSize}`;
     this.setState({loading:true})
 
     let data = await fetch(url);
     let parseData = await data.json();
+    console.log(parseData)
     this.setState({
       articles: parseData.articles,
       totalAritiles: parseData.totalResults,
@@ -27,12 +40,13 @@ export class News extends Component {
   }
   prevClick = async () => {
     console.log("this is a prev click");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=79e419c368bb473cbb82ac60b493c590&page=${this.state.page - 1
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=business&apiKey=79e419c368bb473cbb82ac60b493c590&page=${this.state.page - 1
       }&pagesize=${this.props.pageSize}`;
       this.setState({loading:true})
-
-    let data = await fetch(url);
-    let parseData = await data.json();
+      
+      let data = await fetch(url);
+      let parseData = await data.json();
+      console.log(parseData)
     
     this.setState({
       page: this.state.page - 1,
@@ -45,7 +59,7 @@ export class News extends Component {
     console.log("this is a next click");
     if (!(this.state.page + 1 >Math.ceil(this.state.totalAritiles / this.props.pageSize)))
     {
-      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=79e419c368bb473cbb82ac60b493c590&page=${this.state.page + 1
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=business&apiKey=79e419c368bb473cbb82ac60b493c590&page=${this.state.page + 1
         }&pagesize=${this.props.pageSize}`;
         this.setState({loading:true})
 
